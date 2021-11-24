@@ -1,17 +1,21 @@
 import React, { useContext, useReducer, useEffect, useRef, useState, createContext } from "react";
 
+// Esta es la conexion al api con springboot
 const HOST_API = "http://localhost:8080/api"
 const initialState = {
   list: [],
   item: {}
 }
+// Esta es la variable que nos permite crear el contexto
 const Store = createContext(initialState)
 
+// Esta es la funcion que nos permite crear el formulario
 const Form = () => {
   const formRef = useRef(null);
   const { dispatch, state: { item } } = useContext(Store);
   const [state, setState] = useState(item);
 
+  // Esto es para que cuando el usuario da click agregue un nuevo item a la lista
   const onAdd = (event) => {
     event.preventDefault();
 
@@ -36,6 +40,7 @@ const Form = () => {
       });
   }
 
+  // Esta funcion se ejecuta cuando el usuario da click al boton de editar
   const onEdit = (event) => {
     event.preventDefault();
 
@@ -60,19 +65,17 @@ const Form = () => {
       });
   }
 
-
+// Aqui retornamos un formulario con los campos de nombre y botones de agregar y editar dependiendo del estado actual
   return <form ref={formRef}>
     <input type="text" name="name" defaultValue={item.name} onChange={(event) => {
       setState({ ...state, name: event.target.value })
     }}></input>
     {item.id && <button onClick={onEdit}>Actualizar</button>}
     {!item.id && <button onClick={onAdd}>Agregar</button>}
-
-
-
   </form>
 }
 
+// Esta es la funcion que nos permite crear la lista con los items
 const List = () => {
   const { dispatch, state } = useContext(Store);
 
@@ -121,6 +124,7 @@ const List = () => {
   </div>
 }
 
+// Esta es la funcion que nos permite actualizar el estado tomando a eleccion el estado actual y el nuevo estado
 function reducer(state, action) {
   switch (action.type) {
     case 'update-item':
@@ -149,6 +153,7 @@ function reducer(state, action) {
   }
 }
 
+// Esta es la funcion que nos permite crear el contexto
 const StoreProvider = ({ children }) => {
 
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -158,7 +163,7 @@ const StoreProvider = ({ children }) => {
   </Store.Provider>
 }
 
-
+// Esta es la funcion principal de la aplicacion
 function App() {
   return (
     <StoreProvider>
